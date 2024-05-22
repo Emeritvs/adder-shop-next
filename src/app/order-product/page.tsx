@@ -5,7 +5,6 @@ export default function OrderProduct() {
   const handleClick = () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const router = useRouter();
-    console.log("Placing you order");
     router.replace("/blog");
   };
 

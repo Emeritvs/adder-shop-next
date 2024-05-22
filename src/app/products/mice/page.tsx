@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { Product } from "@/app/interfaces/products-interface";
-import ProductCard from "@/components/product-card";
+import ProductCard from "@/components/product-card/product-card";
 import ProductCardSkeleton from "@/components/products-list-skeleton";
 import { MainContext } from "@/contexts/MainContext";
 import { usePathname } from "next/navigation";
@@ -33,7 +33,7 @@ export default function Mice() {
         setProducts(data);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -47,13 +47,12 @@ export default function Mice() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
       <h2
-        className="text-2xl font-bold tracking-tight text-ddd-900"
-        style={{ color: "#f78002" }}
+        className="text-2xl font-bold tracking-tight text-orange-600"
       >
         Mice
       </h2>
 
-      <hr style={{ height: "1px", borderColor: "#f78002" }}></hr>
+      <hr className="border-orange-600"></hr>
 
       <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
         {(products as any).length <= 0 ? (

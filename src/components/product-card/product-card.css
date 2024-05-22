@@ -1,0 +1,14 @@
+.adder-product-card {
+  border-radius: 5px;
+  /* color: #f78002; */
+}
+
+/* .adder-product-card:hover {
+  background-color: #f78002;
+  border-radius: 5px;
+  color: #18181b;
+} */
+
+.adder-product-card img {
+  object-fit: fill;
+}

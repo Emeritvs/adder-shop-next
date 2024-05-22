@@ -12,10 +12,10 @@ import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import HeaderAlert from '@/components/header-alert';
-import ToastAlert from '@/components/toast-alert';
 import Nav from '@/components/nav';
 import { container } from 'webpack';
 import { MainContextProvider } from '@/contexts/MainContext';
+import ToastAlert from '@/components/toast-alert/toast-alert';
 
 export default function RootLayout({
   children,
@@ -23,30 +23,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
 
-    const pathname = usePathname();
-    const [input, setInput] = useState("");
-    const [colorMode, setColorMode] = useState("dark");
-    const [pageTitle, setPageTitle] = useState("Home");
-    const containerStyle = {
-        // border: "4px solid",
-        // borderRadius: "5px",
-        color: "#f78002",
-        // margin: "0 10% 0 10%",
-        backgroundColor: " rgb(24 24 27 / 0.8)",
-        // height: "100vh",
-    };
-
   return (
     <html lang="en">
-      <head></head>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Protest+Riot&family=Rajdhani:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body>
         <MainContextProvider>
-            <Nav></Nav>
-            <div>{children}</div>
+          <Nav />
+          <div className="container mx-auto">{children}</div>
 
-            {/* <footer style={{ backgroundColor: "ghostwhite", padding: "1rem" }}>
+          {/* <footer style={{ backgroundColor: "ghostwhite", padding: "1rem" }}>
             <p>Footer</p>
           </footer> */}
+          <ToastAlert/>
         </MainContextProvider>
       </body>
     </html>

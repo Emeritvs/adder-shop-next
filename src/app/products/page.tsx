@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Product } from "../interfaces/products-interface";
 import ProductCardSkeleton from "@/components/products-list-skeleton";
-import ProductCard from "@/components/product-card";
+import ProductCard from "@/components/product-card/product-card";
 
 export default function Products() {
   const pathName = usePathname();
@@ -33,7 +33,7 @@ export default function Products() {
         setProducts(data);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }

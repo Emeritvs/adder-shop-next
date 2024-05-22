@@ -22,7 +22,7 @@ const ProductCardSkeleton = (
           <div className="mt-4 flex justify-between">
             <div>
               <h3
-                className={`animate-pulse bg-slate-700 text-slate-700 rounded text-sm`}
+                className={`animate-pulse bg-zinc-700 text-zinc-700 rounded text-sm`}
               >
                 <a href={``}>
                   <span aria-hidden="true" className="absolute inset-0" />
@@ -30,12 +30,12 @@ const ProductCardSkeleton = (
                 </a>
               </h3>
               <p
-                className={`animate-pulse bg-slate-700 text-slate-700 rounded mt-1 text-sm`}
+                className={`animate-pulse bg-zinc-700 text-zinc-700 rounded mt-1 text-sm`}
               >{`White`}</p>
             </div>
             <p
-              className={`animate-pulse bg-slate-700 text-slate-700 rounded text-sm font-medium`}
-              style={{height: 'fit-content'}}
+              className={`animate-pulse bg-zinc-700 text-zinc-700 rounded text-sm font-medium`}
+              style={{ height: "fit-content" }}
             >
               {`200`}
             </p>

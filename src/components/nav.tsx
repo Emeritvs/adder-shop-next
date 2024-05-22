@@ -1,36 +1,64 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { useRef, useState } from "react";
-import { usePathname } from "next/navigation";
+import { useContext, useEffect, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import Image from 'next/image';
+import { MainContext } from "@/contexts/MainContext";
+import AdderLogo from "../../public/adder-logo.png";
+import { UserData } from "@/app/interfaces/users-interface";
 
 export default function Nav() {
+  const { userData, handleUserData, getUserData, isLogged, isAdmin, handleToast } = useContext(MainContext);
+  const { push } = useRouter();
+  const [userInfo, setUserInfo] = useState(getUserData());
   const [isProductMenuActive, setIsProductMenuActive] = useState(false);
   const [isUserMenuActive, setIsUserMenuActive] = useState(false);
   const productMenu = useRef(null);
-  const closeOpenMenus = (e: any) =>
-    isProductMenuActive ? setIsProductMenuActive(false) : null;
+
+  const signOut = () => {
+      handleUserData({});
+      push("/login");
+  }
 
   return (
-    <nav className="bg-zinc-900">
+    <nav className="bg-zinc-90">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <a href="/home">
-                <img
-                  className="h-8 w-8"
-                  src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                  alt="Your Company"
-                />
+              <a href="/">
+                <Image
+                  className="h-16 w-16"
+                  src={AdderLogo}
+                  alt="Adder Shop logo"
+                ></Image>
               </a>
             </div>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
-                <div>
+                <a
+                  href="/products/keyboard"
+                  className="rounded-md px-3 py-2 text-lg font-bold text-orange-600"
+                  aria-current="page"
+                  onClick={() => setIsProductMenuActive((prev) => !prev)}
+                >
+                  Keyboards
+                </a>
+
+                <a
+                  href="/products/mice"
+                  className="rounded-md px-3 py-2 text-lg font-bold text-orange-600"
+                  aria-current="page"
+                  onClick={() => setIsProductMenuActive((prev) => !prev)}
+                >
+                  Mice
+                </a>
+
+                {/* <div>
                   <a
                     href="#"
-                    className="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
+                    className="rounded-md px-3 py-2 text-lg font-bold text-orange-600"
                     aria-current="page"
                     onClick={() => setIsProductMenuActive((prev) => !prev)}
                   >
@@ -39,7 +67,7 @@ export default function Nav() {
 
                   <div
                     id="products-dropdown"
-                    className={`absolute z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ${
+                    className={`absolute z-10 mt-2 w-48 origin-top-right rounded-md bg-zinc-900 py-1 shadow-lg ring-1 ring-orange-600 ring-opacity-25 focus:outline-none ${
                       isProductMenuActive ? "block" : "hidden"
                     }`}
                     role="menu"
@@ -49,7 +77,7 @@ export default function Nav() {
                   >
                     <Link
                       href="/products/keyboard"
-                      className="block px-4 py-2 text-sm text-gray-700"
+                      className="block px-4 py-2 text-sm text-orange-600 font-medium"
                       role="menuitem"
                       id="user-menu-item-1"
                       onClick={() => setIsProductMenuActive(false)}
@@ -58,19 +86,29 @@ export default function Nav() {
                     </Link>
                     <Link
                       href="/products/mice"
-                      className="block px-4 py-2 text-sm text-gray-700"
+                      className="block px-4 py-2 text-sm text-orange-600 font-medium"
                       role="menuitem"
                       id="user-menu-item-2"
                       onClick={() => setIsProductMenuActive(false)}
                     >
                       Mice
                     </Link>
+
+                    <Link
+                      href="/products"
+                      className="block px-4 py-2 text-sm text-orange-600 font-bold"
+                      role="menuitem"
+                      id="user-menu-item-2"
+                      onClick={() => setIsProductMenuActive(false)}
+                    >
+                      See all
+                    </Link>
                   </div>
-                </div>
+                </div> */}
 
                 <a
                   href="/contact"
-                  className="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
+                  className="rounded-md px-3 py-2 text-lg font-bold text-orange-600"
                   aria-current="page"
                 >
                   Contact
@@ -81,83 +119,82 @@ export default function Nav() {
 
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6">
-              <button
-                type="button"
-                className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-              >
-                <span className="absolute -inset-1.5"></span>
-                <span className="sr-only">View notifications</span>
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  aria-hidden="true"
+              {!isLogged && (
+                <a
+                  href="/login"
+                  className="rounded-md px-3 py-2 text-lg font-bold text-orange-600 "
+                  aria-current="page"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
-                  />
-                </svg>
-              </button>
+                  Login
+                </a>
+              )}
 
-              <div className="relative ml-3">
-                <div>
-                  <button
-                    type="button"
-                    className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                    id="user-menu-button"
-                    aria-expanded="false"
-                    aria-haspopup="true"
-                    onClick={() => setIsUserMenuActive((prev) => !prev)}
-                  >
-                    <span className="absolute -inset-1.5"></span>
-                    <span className="sr-only">Open user menu</span>
-                    <img
-                      className="h-8 w-8 rounded-full"
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt=""
-                    />
-                  </button>
-                </div>
+              {isLogged && (
+                <div className="relative ml-3">
+                  <div>
+                    <button
+                      type="button"
+                      className="relative flex max-w-xs items-center rounded bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                      id="user-menu-button"
+                      aria-expanded="false"
+                      aria-haspopup="true"
+                      onClick={() => setIsUserMenuActive((prev) => !prev)}
+                    >
+                      <span className="absolute -inset-1.5"></span>
+                      <span className="sr-only">Open user menu</span>
+                      <img
+                        className="h-8 w-8 rounded-full"
+                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        alt=""
+                      />
+                      <span className="px-3 py-2 text-lg font-bold text-orange-600 ">
+                        {userInfo.username}
+                      </span>
+                      {/* <Image src="" alt="Shirt" width={16} height={16} /> */}
+                    </button>
+                  </div>
 
-                <div
-                  id="desktop-dropdown"
-                  className={`absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ${
-                    isUserMenuActive ? "block" : "hidden"
-                  }`}
-                  role="menu"
-                  aria-orientation="vertical"
-                  aria-labelledby="user-menu-button"
-                >
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700"
-                    role="menuitem"
-                    id="user-menu-item-0"
+                  <div
+                    id="desktop-dropdown"
+                    className={`absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-zinc-900 py-1 shadow-lg ring-1 ring-orange-600 ring-opacity-25 focus:outline-none ${
+                      isUserMenuActive ? "block" : "hidden"
+                    }`}
+                    role="menu"
+                    aria-orientation="vertical"
+                    aria-labelledby="user-menu-button"
                   >
-                    Your Profile
-                  </a>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700"
-                    role="menuitem"
-                    id="user-menu-item-1"
-                  >
-                    Settings
-                  </a>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700"
-                    role="menuitem"
-                    id="user-menu-item-2"
-                  >
-                    Sign out
-                  </a>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 text-sm text-orange-600 font-medium"
+                      role="menuitem"
+                      id="user-menu-item-0"
+                    >
+                      My Account
+                    </a>
+
+                    {isAdmin && (
+                      <a
+                        href="/admin-page"
+                        className="block px-4 py-2 text-sm text-orange-600 font-medium"
+                        role="menuitem"
+                        id="user-menu-item-0"
+                      >
+                        Admin
+                      </a>
+                    )}
+
+                    <a
+                      href="#"
+                      className="block px-4 py-2 text-sm text-orange-600 font-medium"
+                      role="menuitem"
+                      id="user-menu-item-2"
+                      onClick={() => signOut()}
+                    >
+                      Sign out
+                    </a>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
           <div className="-mr-2 flex md:hidden">
@@ -204,7 +241,7 @@ export default function Nav() {
         </div>
       </div>
 
-      {/**
+      {/*
        * ! MOBILE
        */}
       <div className="md:hidden" id="mobile-menu">
@@ -220,11 +257,12 @@ export default function Nav() {
         <div className="border-t border-gray-700 pb-3 pt-4">
           <div className="flex items-center px-5">
             <div className="flex-shrink-0">
-              <img
+              {/* <img
                 className="h-10 w-10 rounded-full"
                 src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                 alt=""
-              />
+              /> */}
+              <Image src="" alt="Shirt" width={100} height={100} />
             </div>
             <div className="ml-3">
               <div className="text-base font-medium leading-none text-white">

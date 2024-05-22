@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 import { useSearchParams } from "next/navigation";
 import { NextApiRequest } from "next";
 
@@ -10,7 +10,10 @@ export async function GET(req: NextRequest) {
   const params = req.nextUrl.searchParams;
   const queryParams : any = {};
   
-  params.forEach((value, key) => queryParams[key] = value);
+  params.forEach((value, key) => {
+    if (key != 'id') return (queryParams[key] = { $regex: new RegExp(value, 'i') });
+    else return queryParams[key] = value;
+  });
 
   try {
     const client = await MongoClient.connect(uri, {
@@ -19,7 +22,19 @@ export async function GET(req: NextRequest) {
     });
     const db = client.db("addershop");
     const collection = db.collection("products");
+
+    if (queryParams.id) {
+      queryParams._id = new ObjectId(queryParams.id);
+      delete queryParams.id;
+    }
+
+    if (queryParams.name) {
+      queryParams.name = queryParams.name;
+      console.log(queryParams.name);
+    }
+
     const data = await collection.find(queryParams).toArray();
+
     client.close();
 
     return NextResponse.json(data);

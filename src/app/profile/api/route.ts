@@ -7,8 +7,6 @@ export async function GET(request : NextRequest) {
   const theme = request.cookies.get('theme');
 
   cookies().set("resultsPerPage", "20");
-  console.log(theme);
-  console.log(cookies().get("resultsPerPage"));
   
   return new Response("<h1>Profile API data<h1>", { 
     headers: { 
