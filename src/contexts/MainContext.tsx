@@ -18,6 +18,8 @@ interface MainContextData {
   userModal: (action: string) => void;
   productDialogOpen: boolean;
   productModal: (action: string) => void;
+  cartSidebarOpen: boolean;
+  cartSidebar: (action: string) => void;
 }
 
 interface MainContextProviderProps {
@@ -36,10 +38,13 @@ export const MainContextProvider = ({ children }: MainContextProviderProps) => {
   const [toastData, setToastData] = useState({status: 'info', message: 'Example content', visible: false });
   const [userDialogOpen, setUserDialogOpen] = useState(false);
   const [productDialogOpen, setProductDialogOpen] = useState(false);
+  const [cartSidebarOpen, setCartSidebarOpen] = useState(true);
 
   const userModal = (action: string) => setUserDialogOpen(action == 'show' ? true : false);
   const productModal = (action: string) =>
     setProductDialogOpen(action == "show" ? true : false);
+  const cartSidebar = (action: string) =>
+    setCartSidebarOpen(action == "show" ? true : false);
   const changeColorMode = () => {
     setColorMode("dark");
   }
@@ -68,7 +73,27 @@ export const MainContextProvider = ({ children }: MainContextProviderProps) => {
   }
 
   return (
-    <MainContext.Provider value={{ userData, handleUserData, colorMode, changeColorMode, currentPageTitle, changePageTitle, isLogged, isAdmin, toastData, handleToast, getUserData, userDialogOpen, productDialogOpen, userModal, productModal}}>
+    <MainContext.Provider
+      value={{
+        userData,
+        handleUserData,
+        colorMode,
+        changeColorMode,
+        currentPageTitle,
+        changePageTitle,
+        isLogged,
+        isAdmin,
+        toastData,
+        handleToast,
+        getUserData,
+        userDialogOpen,
+        productDialogOpen,
+        userModal,
+        productModal,
+        cartSidebarOpen,
+        cartSidebar,
+      }}
+    >
       {children}
     </MainContext.Provider>
   );

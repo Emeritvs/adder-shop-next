@@ -16,6 +16,7 @@ import Nav from '@/components/nav';
 import { container } from 'webpack';
 import { MainContextProvider } from '@/contexts/MainContext';
 import ToastAlert from '@/components/toast-alert/toast-alert';
+import CartSidebar from '@/components/cart-sidebar/cart-sidebar';
 
 export default function RootLayout({
   children,
@@ -35,13 +36,15 @@ export default function RootLayout({
       </head>
       <body>
         <MainContextProvider>
+          <CartSidebar />
           <Nav />
+
           <div className="container mx-auto">{children}</div>
 
           {/* <footer style={{ backgroundColor: "ghostwhite", padding: "1rem" }}>
             <p>Footer</p>
           </footer> */}
-          <ToastAlert/>
+          <ToastAlert />
         </MainContextProvider>
       </body>
     </html>

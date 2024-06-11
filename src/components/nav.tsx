@@ -9,7 +9,7 @@ import AdderLogo from "../../public/adder-logo.png";
 import { UserData } from "@/app/interfaces/users-interface";
 
 export default function Nav() {
-  const { userData, handleUserData, getUserData, isLogged, isAdmin, handleToast } = useContext(MainContext);
+  const { userData, handleUserData, getUserData, isLogged, isAdmin, handleToast, cartSidebar } = useContext(MainContext);
   const { push } = useRouter();
   const [userInfo, setUserInfo] = useState(getUserData());
   const [isProductMenuActive, setIsProductMenuActive] = useState(false);
@@ -54,57 +54,6 @@ export default function Nav() {
                 >
                   Mice
                 </a>
-
-                {/* <div>
-                  <a
-                    href="#"
-                    className="rounded-md px-3 py-2 text-lg font-bold text-orange-600"
-                    aria-current="page"
-                    onClick={() => setIsProductMenuActive((prev) => !prev)}
-                  >
-                    Products
-                  </a>
-
-                  <div
-                    id="products-dropdown"
-                    className={`absolute z-10 mt-2 w-48 origin-top-right rounded-md bg-zinc-900 py-1 shadow-lg ring-1 ring-orange-600 ring-opacity-25 focus:outline-none ${
-                      isProductMenuActive ? "block" : "hidden"
-                    }`}
-                    role="menu"
-                    aria-orientation="vertical"
-                    aria-labelledby="user-menu-button"
-                    ref={productMenu}
-                  >
-                    <Link
-                      href="/products/keyboard"
-                      className="block px-4 py-2 text-sm text-orange-600 font-medium"
-                      role="menuitem"
-                      id="user-menu-item-1"
-                      onClick={() => setIsProductMenuActive(false)}
-                    >
-                      Keyboard
-                    </Link>
-                    <Link
-                      href="/products/mice"
-                      className="block px-4 py-2 text-sm text-orange-600 font-medium"
-                      role="menuitem"
-                      id="user-menu-item-2"
-                      onClick={() => setIsProductMenuActive(false)}
-                    >
-                      Mice
-                    </Link>
-
-                    <Link
-                      href="/products"
-                      className="block px-4 py-2 text-sm text-orange-600 font-bold"
-                      role="menuitem"
-                      id="user-menu-item-2"
-                      onClick={() => setIsProductMenuActive(false)}
-                    >
-                      See all
-                    </Link>
-                  </div>
-                </div> */}
 
                 <a
                   href="/contact"
@@ -195,12 +144,21 @@ export default function Nav() {
                   </div>
                 </div>
               )}
+
+              <a
+                className="rounded-md px-3 py-2 text-lg font-bold text-orange-600 "
+                aria-current="page"
+                onClick={() => cartSidebar("show")}
+              >
+                Carrinho
+              </a>
             </div>
           </div>
+
           <div className="-mr-2 flex md:hidden">
             <button
               type="button"
-              className="relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+              className="relative inline-flex items-center justify-center rounded-md bg-orange-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
               aria-controls="mobile-menu"
               aria-expanded="false"
             >
@@ -241,11 +199,10 @@ export default function Nav() {
         </div>
       </div>
 
-      {/*
-       * ! MOBILE
+      {/* TODO MOBILE
        */}
       <div className="md:hidden" id="mobile-menu">
-        <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
+        <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3 bg-orange-600">
           <a
             href="#"
             className="bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
@@ -295,7 +252,7 @@ export default function Nav() {
               </svg>
             </button>
           </div>
-          {/* <div id="mobile-dropdown" className="mt-3 space-y-1 px-2">
+          <div id="mobile-dropdown" className="mt-3 space-y-1 px-2">
             <a
               href="#"
               className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
@@ -314,7 +271,7 @@ export default function Nav() {
             >
               Sign out
             </a>
-          </div> */}
+          </div>
         </div>
       </div>
     </nav>
