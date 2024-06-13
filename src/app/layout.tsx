@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-page-custom-font */
 "use client";
 import { Metadata } from 'next';
 import "./globals.css";
@@ -16,7 +17,9 @@ import Nav from '@/components/nav';
 import { container } from 'webpack';
 import { MainContextProvider } from '@/contexts/MainContext';
 import ToastAlert from '@/components/toast-alert/toast-alert';
-import CartSidebar from '@/components/cart-sidebar/cart-sidebar';
+import CartSidebarMenu from '@/components/cart-sidebar-menu/cart-sidebar-menu';
+import { ProductContextProvider } from '@/contexts/ProductContext';
+import { AccountContextProvider } from '@/contexts/AccountContext';
 
 export default function RootLayout({
   children,
@@ -36,14 +39,15 @@ export default function RootLayout({
       </head>
       <body>
         <MainContextProvider>
-          <CartSidebar />
           <Nav />
 
-          <div className="container mx-auto">{children}</div>
+          <AccountContextProvider>
+            <ProductContextProvider>
+              <CartSidebarMenu />
+              <div className="container mx-auto">{children}</div>
+            </ProductContextProvider>
+          </AccountContextProvider>
 
-          {/* <footer style={{ backgroundColor: "ghostwhite", padding: "1rem" }}>
-            <p>Footer</p>
-          </footer> */}
           <ToastAlert />
         </MainContextProvider>
       </body>

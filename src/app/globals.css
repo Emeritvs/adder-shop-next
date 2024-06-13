@@ -180,3 +180,24 @@ body {
         opacity: 0
       }
     }
+
+/* Works on Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #ea580c #27272a;
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #27272a;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #ea580c;
+  border-radius: 20px;
+  border: 3px solid #27272a;
+}

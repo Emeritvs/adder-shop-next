@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Product } from "../interfaces/products-interface";
 import ProductCardSkeleton from "@/components/products-list-skeleton";
@@ -9,19 +10,14 @@ import ProductCard from "@/components/product-card/product-card";
 export default function Products() {
   const pathName = usePathname();
   const [products, setProducts] = useState([] as Product);
+  const searchParams = useSearchParams();
+  const type = searchParams?.get('type');
+
   const [loading, setLoading] = useState(true);
-    const containerStyle = {
-      // border: "4px solid",
-      // borderRadius: "5px",
-      color: "#f78002",
-      // margin: "0 10% 0 10%",
-      // backgroundColor: " rgb(24 24 27 / 0.8)",
-      // height: "100vh",
-    };
 
   const fetchData = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/products", {
+      const res = await fetch(`http://localhost:3000/api/products?type=${type}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -41,12 +37,12 @@ export default function Products() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [type]);
     
   return (
     <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
       <h2 className="text-2xl font-bold tracking-tight text-ddd-900" style={{color: "#f78002"}}>
-        Products
+        {type ?? 'Products'}
       </h2>
 
       <hr style={{ height: "1px", borderColor: "#f78002" }}></hr>

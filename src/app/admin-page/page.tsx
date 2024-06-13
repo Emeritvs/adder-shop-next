@@ -15,6 +15,8 @@ import UserDialog from "@/components/user-dialog/user-dialog";
 import AdminItemListSkeleton from "@/components/admin-product-list-skeleton/admin-product-list-skeleton";
 import AdminProductListSkeleton from "@/components/admin-product-list-skeleton/admin-product-list-skeleton";
 import AdminUserListSkeleton from "@/components/admin-user-list-skeleton/admin-user-list-skeleton";
+import { ProductContext } from "@/contexts/ProductContext";
+import { AccountContext } from "@/contexts/AccountContext";
 
 export default function AdminPage() {
   const recoverModalProps = {
@@ -37,11 +39,9 @@ export default function AdminPage() {
     changePageTitle,
     handleToast,
     getUserData,
-    userDialogOpen,
-    userModal,
-    productDialogOpen,
-    productModal
   } = useContext(MainContext);
+  const {userDialogOpen, userModal} = useContext(AccountContext);
+  const {productDialogOpen, productModal} = useContext(ProductContext);
   const [loading, setLoading] = useState(true);
   const [currentTab, setCurrentTab] = useState("users");
   const [productSearch, setProductSearch] = useState("");
@@ -222,8 +222,7 @@ export default function AdminPage() {
                     </button>
                     <button
                       className="ml-2 bg-orange-600 text-white p-2 rounded"
-                      onClick={() => deleteUser(user)
-                      }
+                      onClick={() => deleteUser(user)}
                     >
                       Delete
                     </button>
@@ -234,6 +233,12 @@ export default function AdminPage() {
               </div>
             ))
           )}
+
+          <UserDialog
+            open={userDialogOpen}
+            user={currentUser}
+            onDismiss={() => handleDialogDismiss("users")}
+          ></UserDialog>
         </div>
       )}
 
@@ -294,19 +299,14 @@ export default function AdminPage() {
               </div>
             ))
           )}
+
+          <ProductDialog
+            open={productDialogOpen}
+            product={currentProduct}
+            onDismiss={() => handleDialogDismiss("products")}
+          ></ProductDialog>
         </div>
       )}
-
-      <UserDialog
-        open={userDialogOpen}
-        user={currentUser}
-        onDismiss={() => handleDialogDismiss("users")}
-      ></UserDialog>
-      <ProductDialog
-        open={productDialogOpen}
-        product={currentProduct}
-        onDismiss={() => handleDialogDismiss("products")}
-      ></ProductDialog>
     </div>
   );
 }

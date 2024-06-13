@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
+import { AccountContext } from "@/contexts/AccountContext";
 import { MainContext } from "@/contexts/MainContext";
-import { usePathname } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 
 /* eslint-disable @next/next/no-img-element */
@@ -16,15 +17,15 @@ const UserDialog = (
     currentPageTitle,
     changePageTitle,
     handleToast,
-    userModal,
   } = useContext(MainContext);
+  const { userDialogOpen, userModal } = useContext(AccountContext);
+
     const [userInfo, setUserInfo] = useState({} as any);
   const [isVisible, setIsVisible] = useState(open);
   
     useEffect(() => {
       setUserInfo(user?.data);
       setIsVisible(open);
-      console.warn(userInfo);
     }, [open, user]);
     
   const closeModal = () => {
@@ -111,7 +112,7 @@ const UserDialog = (
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
           <div
-            className={`relative transform overflow-hidden rounded-lg bg-zinc-900 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg ${
+            className={`relative transform overflow-hidden rounded-lg bg-zinc-900 text-left shadow-xl transition-all sm:my-8 w-2/3${
               isVisible
                 ? "ease-out duration-300 translate-y-0 sm:scale-100 opacity-100"
                 : "ease-in duration-200 translate-y-4 sm:translate-y-0 sm:scale-95 opacity-0"
@@ -128,90 +129,102 @@ const UserDialog = (
                     user
                   </h3>
                   <hr className="border-orange-600"></hr>
+
                   <div className="m-auto grid">
                     <div className="grid grid-cols-2 gap-8">
-                      <div className="my-6 grid w-full mx-auto col-span-1 ">
-                        <label
-                          className="text-lg font-medium text-orange-600 absolute px-2 mx-6 bg-zinc-900 "
-                          style={{
-                            width: "fit-content",
-                            transform: "translate(0%, -50%)",
-                            zIndex: "10",
-                          }}
-                        >
-                          First name
-                        </label>
-                        <input
-                          className="h-12 p-2 bg-zinc-900 border border-orange-600 text-orange-600 "
-                          type="text"
-                          name="firstname"
-                          value={userInfo?.firstname}
-                          onChange={handleChange}
-                          id=""
+
+                      <div className="col-span-1">
+                        <img
+                        className="my-6"
+                          src={"https://i.redd.it/nruegxhzx3471.jpg"}
+                          alt=""
                         />
                       </div>
 
-                      <div className="my-6 grid w-full mx-auto col-span-1 ">
-                        <label
-                          className="text-lg font-medium text-orange-600 absolute px-2 mx-6 bg-zinc-900 "
-                          style={{
-                            width: "fit-content",
-                            transform: "translate(0%, -50%)",
-                            zIndex: "10",
-                          }}
-                        >
-                          Last name
-                        </label>
-                        <input
-                          className="h-12 p-2 bg-zinc-900 border border-orange-600 text-orange-600 "
-                          type="text"
-                          name="lastname"
-                          value={userInfo?.lastname}
-                          onChange={handleChange}
-                          id=""
-                        />
-                      </div>
+                      <div className="col-span-1 grid grid-cols-2 gap-8">
+                        <div className="my-6 grid w-full mx-auto col-span-1 ">
+                          <label
+                            className="text-lg font-medium text-orange-600 absolute px-2 mx-6 bg-zinc-900 "
+                            style={{
+                              width: "fit-content",
+                              transform: "translate(0%, -50%)",
+                              zIndex: "10",
+                            }}
+                          >
+                            First name
+                          </label>
+                          <input
+                            className="h-12 p-2 bg-zinc-900 border border-orange-600 text-orange-600 "
+                            type="text"
+                            name="firstname"
+                            value={userInfo?.firstname}
+                            onChange={handleChange}
+                            id=""
+                          />
+                        </div>
 
-                      <div className="my-6 grid w-full col-span-2 mx-auto ">
-                        <label
-                          className="text-lg font-medium text-orange-600 absolute px-2 mx-6 bg-zinc-900 "
-                          style={{
-                            width: "fit-content",
-                            transform: "translate(0%, -50%)",
-                            zIndex: "10",
-                          }}
-                        >
-                          Email
-                        </label>
-                        <input
-                          className="h-12 p-2 bg-zinc-900 border border-orange-600 text-orange-600 "
-                          type="text"
-                          name="email"
-                          value={userInfo?.email}
-                          onChange={handleChange}
-                          id=""
-                        />
-                      </div>
+                        <div className="my-6 grid w-full mx-auto col-span-1 ">
+                          <label
+                            className="text-lg font-medium text-orange-600 absolute px-2 mx-6 bg-zinc-900 "
+                            style={{
+                              width: "fit-content",
+                              transform: "translate(0%, -50%)",
+                              zIndex: "10",
+                            }}
+                          >
+                            Last name
+                          </label>
+                          <input
+                            className="h-12 p-2 bg-zinc-900 border border-orange-600 text-orange-600 "
+                            type="text"
+                            name="lastname"
+                            value={userInfo?.lastname}
+                            onChange={handleChange}
+                            id=""
+                          />
+                        </div>
 
-                      <div className="my-6 grid w-full mx-auto col-span-1 ">
-                        <label
-                          className="text-lg font-medium text-orange-600 absolute px-2 mx-6 bg-zinc-900 "
-                          style={{
-                            width: "fit-content",
-                            transform: "translate(0%, -50%)",
-                            zIndex: "10",
-                          }}
-                        >
-                          Username
-                        </label>
-                        <input
-                          className="h-12 p-2 bg-zinc-900 border border-orange-600 text-orange-600 "
-                          type="text"
-                          name="username"
-                          value={userInfo?.username}
-                          onChange={handleChange}
-                          id=""
-                        />
+                        <div className="my-6 grid w-full col-span-2 mx-auto ">
+                          <label
+                            className="text-lg font-medium text-orange-600 absolute px-2 mx-6 bg-zinc-900 "
+                            style={{
+                              width: "fit-content",
+                              transform: "translate(0%, -50%)",
+                              zIndex: "10",
+                            }}
+                          >
+                            Email
+                          </label>
+                          <input
+                            className="h-12 p-2 bg-zinc-900 border border-orange-600 text-orange-600 "
+                            type="text"
+                            name="email"
+                            value={userInfo?.email}
+                            onChange={handleChange}
+                            id=""
+                          />
+                        </div>
+
+                        <div className="my-6 grid w-full mx-auto col-span-1 ">
+                          <label
+                            className="text-lg font-medium text-orange-600 absolute px-2 mx-6 bg-zinc-900 "
+                            style={{
+                              width: "fit-content",
+                              transform: "translate(0%, -50%)",
+                              zIndex: "10",
+                            }}
+                          >
+                            Username
+                          </label>
+                          <input
+                            className="h-12 p-2 bg-zinc-900 border border-orange-600 text-orange-600 "
+                            type="text"
+                            name="username"
+                            value={userInfo?.username}
+                            onChange={handleChange}
+                            id=""
+                          />
+                        </div>
                       </div>
 
                       {/* <div className="my-6 grid w-full mx-auto col-span-1">
@@ -243,7 +256,7 @@ const UserDialog = (
             <div className="bg-zinc-900 px-4 py-3 sm:flex sm:px-6">
               <button
                 type="button"
-                className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                className="mt-3 inline-flex w-full justify-center items-center rounded-md bg-zinc-800 px-3 py-2 text-sm font-semibold text-orange-600 hover:text-white shadow-sm ring-1 ring-inset ring-orange-600 hover:bg-orange-600 sm:mt-0 sm:w-auto"
                 onClick={() => closeModal()}
               >
                 Cancel

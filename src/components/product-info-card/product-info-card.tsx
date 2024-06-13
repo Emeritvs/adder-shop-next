@@ -1,6 +1,6 @@
 import { MainContext } from "@/contexts/MainContext";
 import { usePathname } from "next/navigation";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import { formatCurrency } from "@/app/utils/formatter";
 
@@ -10,9 +10,12 @@ const ProductInfoCard = (
   { children }: { children: React.ReactNode }
 ) => {
   const pathName = usePathname();
-  const { colorMode, changeColorMode, currentPageTitle, changePageTitle } =
+  const { cartItems, handleUserCart } =
     useContext(MainContext);
-  const [currentColor, setCurrentColor] = useState("white");
+  const colors = ["black", "white", "blue"];
+  const [productPhotos, setProductPhotos] = useState([]) as any; 
+  const [currentColor, setCurrentColor] = useState(colors[0]);
+
   const product = props.data;
   const blackShirt = "";
   const whiteShirt = "";
@@ -20,9 +23,19 @@ const ProductInfoCard = (
 
 
   const changeActiveModel = (color: string) => {
-    setCurrentColor(color);
-    console.warn(currentColor);
+    setCurrentColor(color as any);
   };
+
+  const addToCart = () => {
+   if (currentColor == null) return false;
+   let auxProduct = JSON.parse(JSON.stringify(product));
+   auxProduct.quantity = 1;
+   handleUserCart('add', auxProduct, cartItems.length + 1);
+  };
+
+  useEffect(() => {
+   if (product.imageSrc) setProductPhotos([product.imageSrc]);
+  }, [product]);
 
   return (
     <div className="mx-auto max-w-screen-2xl px-4">
@@ -67,15 +80,15 @@ const ProductInfoCard = (
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
-                    stroke-width="1.5"
+                    strokeWidth="1.5"
                     stroke="currentColor"
                     aria-hidden="true"
                     data-slot="icon"
                     className="h-5"
                   >
                     <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
                     ></path>
                   </svg>
@@ -89,15 +102,15 @@ const ProductInfoCard = (
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
-                    stroke-width="1.5"
+                    strokeWidth="1.5"
                     stroke="currentColor"
                     aria-hidden="true"
                     data-slot="icon"
                     className="h-5"
                   >
                     <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
                     ></path>
                   </svg>
@@ -106,6 +119,7 @@ const ProductInfoCard = (
             </div>
           </div>
           <ul className="my-12 flex items-center justify-center gap-2 overflow-auto py-1 lg:mb-0">
+            {productPhotos.map((photo: any) => {
             <li className="h-20 w-20">
               <a
                 aria-label="Enlarge product image"
@@ -117,17 +131,19 @@ const ProductInfoCard = (
                     currentColor == "black" ? "border-orange-600 border-2" : ""
                   }`}
                 >
-                  <Image
+                  <img
                     className="relative h-full w-full object-contain transition duration-300 ease-in-out group-hover:scale-105"
-                    src={blackShirt}
+                    src={photo}
                     alt="Shirt"
                     width={80}
                     height={80}
                   />
                 </div>
               </a>
-            </li>
-            <li className="h-20 w-20">
+            </li>;
+            })}
+
+            {/* <li className="h-20 w-20">
               <a
                 aria-label="Enlarge product image"
                 className="h-full w-full"
@@ -169,7 +185,7 @@ const ProductInfoCard = (
                   />
                 </div>
               </a>
-            </li>
+            </li> */}
           </ul>
         </div>
         <div className="basis-full lg:basis-2/6">
@@ -188,15 +204,24 @@ const ProductInfoCard = (
             <dt className="mb-4 text-sm uppercase tracking-wide text-orange-600">
               Color
             </dt>
-            <dd className="flex flex-wrap gap-3">
-              <button
-                aria-disabled="false"
-                title="Color Black"
-                className="flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm text-white dark:border-neutral-800 dark:bg-neutral-900 ring-1 ring-transparent transition duration-300 ease-in-out hover:scale-110 hover:border-white hover:text-white"
-              >
-                Black
-              </button>
-              <button
+            <div className="flex flex-wrap gap-3">
+              {colors.map((color, index) => (
+                <button
+                  key={index}
+                  aria-disabled="false"
+                  title="Color Black"
+                  className={`flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm ${
+                    currentColor == color
+                      ? "border-2 border-orange-600 text-orange-600"
+                      : "text-white"
+                  }  dark:bg-neutral-900 ring-1 ring-transparent transition duration-300 ease-in-out hover:scale-110 hover:border-white hover:text-white`}
+                  onClick={() => changeActiveModel(color)}
+                >
+                  {color}
+                </button>
+              ))}
+
+              {/* <button
                 aria-disabled="false"
                 title="Color White"
                 className="flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm text-white dark:border-neutral-800 dark:bg-neutral-900 ring-1 ring-transparent transition duration-300 ease-in-out hover:scale-110 hover:border-white hover:text-white"
@@ -209,8 +234,8 @@ const ProductInfoCard = (
                 className="flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm text-white dark:border-neutral-800 dark:bg-neutral-900 relative z-10 cursor-not-allowed overflow-hidden ring-1 ring-neutral-300 before:absolute before:inset-x-0 before:-z-10 before:h-px before:-rotate-45 before:bg-neutral-300 before:transition-transform  dark:text-neutral-400 dark:ring-neutral-700 before:dark:bg-neutral-700"
               >
                 Blue
-              </button>
-            </dd>
+              </button> */}
+            </div>
           </dl>
           {(product as any)?.size != undefined && (
             <dl className="mb-8">
@@ -271,28 +296,33 @@ const ProductInfoCard = (
             </dl>
           )}
 
-          <div className="prose mx-auto max-w-6xl text-base leading-7 text-black prose-headings:mt-8 prose-headings:font-semibold prose-headings:tracking-wide prose-headings:text-black prose-h1:text-5xl prose-h2:text-4xl prose-h3:text-3xl prose-h4:text-2xl prose-h5:text-xl prose-h6:text-lg prose-a:text-black prose-a:underline hover:prose-a:text-neutral-300 prose-strong:text-black prose-ol:mt-8 prose-ol:list-decimal prose-ol:pl-6 prose-ul:mt-8 prose-ul:list-disc prose-ul:pl-6 dark:text-white dark:prose-headings:text-white dark:prose-a:text-white dark:prose-strong:text-white mb-6 text-sm leading-tight dark:text-white/[60%]">
+          <div className="prose mx-auto max-w-6xl text-black prose-headings:mt-8 prose-headings:font-semibold prose-headings:tracking-wide prose-headings:text-black prose-h1:text-5xl prose-h2:text-4xl prose-h3:text-3xl prose-h4:text-2xl prose-h5:text-xl prose-h6:text-lg prose-a:text-black prose-a:underline hover:prose-a:text-neutral-300 prose-strong:text-black prose-ol:mt-8 prose-ol:list-decimal prose-ol:pl-6 prose-ul:mt-8 prose-ul:list-disc prose-ul:pl-6 dark:text-white dark:prose-headings:text-white dark:prose-a:text-white dark:prose-strong:text-white mb-6 text-sm leading-tight dark:text-white/[60%]">
             60% combed ringspun cotton/40% polyester jersey tee.
           </div>
           <button
             aria-label="Please select an option"
             aria-disabled="true"
-            className="relative flex w-full items-center justify-center rounded-full bg-blue-600 p-4 tracking-wide text-white cursor-not-allowed opacity-60 hover:opacity-60"
+            className={`relative flex w-full items-center justify-center rounded-full bg-blue-600 p-4 tracking-wide text-white ${
+              currentColor == null
+                ? "cursor-not-allowed opacity-60 hover:opacity-60"
+                : ""
+            } `}
+            onClick={() => addToCart()}
           >
             <div className="absolute left-0 ml-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                strokeWidth="1.5"
                 stroke="currentColor"
                 aria-hidden="true"
                 data-slot="icon"
                 className="h-5"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M12 4.5v15m7.5-7.5h-15"
                 ></path>
               </svg>

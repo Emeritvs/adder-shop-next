@@ -1,6 +1,7 @@
 "use client";
 import { Product } from "@/app/interfaces/products-interface";
 import { MainContext } from "@/contexts/MainContext";
+import { ProductContext } from "@/contexts/ProductContext";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 
@@ -10,8 +11,9 @@ const ProductDialog = (
   // { children }: { children: React.ReactNode }
 ) => {
   const { children, open, product, onDismiss, ...rest } = props;
-  const { colorMode, changeColorMode, currentPageTitle, changePageTitle, productModal, toastData, handleToast} =
+  const { colorMode, changeColorMode, currentPageTitle, changePageTitle, toastData, handleToast} =
     useContext(MainContext);
+  const { productModal } = useContext(ProductContext);
   const [productInfo, setProductInfo] = useState({} as Product);
 
   const [isVisible, setIsVisible] = useState(open);
@@ -103,6 +105,7 @@ const ProductDialog = (
                     product
                   </h3>
                   <hr className="border-orange-600"></hr>
+                  
                   <div className="m-auto grid">
                     <div className="grid grid-cols-2 gap-8">
                       <div className="col-span-1">

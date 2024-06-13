@@ -1,5 +1,5 @@
 import { UserData } from "@/app/interfaces/users-interface";
-import { setUserDataStorage, getUserDataStorage } from "@/app/utils/storage";
+import { setUserDataStorage, getUserDataStorage, getStoredCartItems } from "@/app/utils/storage";
 import React, { createContext, useState, useContext, ReactNode } from "react";
 
 interface MainContextData {
@@ -14,12 +14,11 @@ interface MainContextData {
   toastData: any;
   handleToast: (data: any) => void;
   getUserData: () => UserData;
-  userDialogOpen: boolean;
-  userModal: (action: string) => void;
-  productDialogOpen: boolean;
-  productModal: (action: string) => void;
+
   cartSidebarOpen: boolean;
   cartSidebar: (action: string) => void;
+  cartItems: any;
+  handleUserCart: (action: string, product: any, index : any) => void;
 }
 
 interface MainContextProviderProps {
@@ -36,13 +35,11 @@ export const MainContextProvider = ({ children }: MainContextProviderProps) => {
   const [currentPageTitle, setCurrentPageTitle] = useState("Home");
   const [currentActiveDialog, setCurrentActiveDialog] = useState(null);
   const [toastData, setToastData] = useState({status: 'info', message: 'Example content', visible: false });
-  const [userDialogOpen, setUserDialogOpen] = useState(false);
-  const [productDialogOpen, setProductDialogOpen] = useState(false);
-  const [cartSidebarOpen, setCartSidebarOpen] = useState(true);
 
-  const userModal = (action: string) => setUserDialogOpen(action == 'show' ? true : false);
-  const productModal = (action: string) =>
-    setProductDialogOpen(action == "show" ? true : false);
+  const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
+  const [cartItems, setCartItems] = useState(getStoredCartItems()) as any;
+
+
   const cartSidebar = (action: string) =>
     setCartSidebarOpen(action == "show" ? true : false);
   const changeColorMode = () => {
@@ -62,6 +59,29 @@ export const MainContextProvider = ({ children }: MainContextProviderProps) => {
     setIsLogged(logged);
     setIsAdmin(admin);
   }
+  const handleUserCart = (action : string, product : any, index : any) => {
+
+   let cart: any = [...JSON.parse(JSON.stringify(getStoredCartItems()))];
+   if (action == "add") {
+     cart = [...cart, product];
+   } else if (action == "remove") {
+     cart = cart.splice(index, 1);
+   } else if (action == "update") {
+     cart.map((item: any) => {
+       if (item._id == product._id) {
+         item.quantity = product.quantity;
+       }
+
+       return item;
+     });
+   } else {
+     cart = [];
+   }
+
+   setCartItems(cart);
+   localStorage.setItem('cartItems', JSON.stringify(cart));
+  };
+
   const getUserData = () => {
     const user = getUserDataStorage();
     const logged = user.id != null && user.id != undefined ? true : false;
@@ -86,12 +106,10 @@ export const MainContextProvider = ({ children }: MainContextProviderProps) => {
         toastData,
         handleToast,
         getUserData,
-        userDialogOpen,
-        productDialogOpen,
-        userModal,
-        productModal,
         cartSidebarOpen,
         cartSidebar,
+        cartItems,
+        handleUserCart
       }}
     >
       {children}
