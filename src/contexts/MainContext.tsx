@@ -15,10 +15,10 @@ interface MainContextData {
   handleToast: (data: any) => void;
   getUserData: () => UserData;
 
-  cartSidebarOpen: boolean;
-  cartSidebar: (action: string) => void;
-  cartItems: any;
-  handleUserCart: (action: string, product: any, index : any) => void;
+  // cartSidebarOpen: boolean;
+  // cartSidebar: (action: string) => void;
+  // cartItems: any;
+  // handleUserCart: (action: string, product: any, index : any) => void;
 }
 
 interface MainContextProviderProps {
@@ -36,12 +36,11 @@ export const MainContextProvider = ({ children }: MainContextProviderProps) => {
   const [currentActiveDialog, setCurrentActiveDialog] = useState(null);
   const [toastData, setToastData] = useState({status: 'info', message: 'Example content', visible: false });
 
-  const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
-  const [cartItems, setCartItems] = useState(getStoredCartItems()) as any;
+  // const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
+  // const [cartItems, setCartItems] = useState(getStoredCartItems()) as any;
 
 
-  const cartSidebar = (action: string) =>
-    setCartSidebarOpen(action == "show" ? true : false);
+
   const changeColorMode = () => {
     setColorMode("dark");
   }
@@ -59,28 +58,7 @@ export const MainContextProvider = ({ children }: MainContextProviderProps) => {
     setIsLogged(logged);
     setIsAdmin(admin);
   }
-  const handleUserCart = (action : string, product : any, index : any) => {
 
-   let cart: any = [...JSON.parse(JSON.stringify(getStoredCartItems()))];
-   if (action == "add") {
-     cart = [...cart, product];
-   } else if (action == "remove") {
-     cart = cart.splice(index, 1);
-   } else if (action == "update") {
-     cart.map((item: any) => {
-       if (item._id == product._id) {
-         item.quantity = product.quantity;
-       }
-
-       return item;
-     });
-   } else {
-     cart = [];
-   }
-
-   setCartItems(cart);
-   localStorage.setItem('cartItems', JSON.stringify(cart));
-  };
 
   const getUserData = () => {
     const user = getUserDataStorage();
@@ -105,11 +83,7 @@ export const MainContextProvider = ({ children }: MainContextProviderProps) => {
         isAdmin,
         toastData,
         handleToast,
-        getUserData,
-        cartSidebarOpen,
-        cartSidebar,
-        cartItems,
-        handleUserCart
+        getUserData
       }}
     >
       {children}

@@ -3,6 +3,7 @@ import { usePathname } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import { formatCurrency } from "@/app/utils/formatter";
+import { CartContext } from "@/contexts/CartContext";
 
 /* eslint-disable @next/next/no-img-element */
 const ProductInfoCard = (
@@ -11,7 +12,7 @@ const ProductInfoCard = (
 ) => {
   const pathName = usePathname();
   const { cartItems, handleUserCart } =
-    useContext(MainContext);
+    useContext(CartContext);
   const colors = ["black", "white", "blue"];
   const [productPhotos, setProductPhotos] = useState([]) as any; 
   const [currentColor, setCurrentColor] = useState(colors[0]);

@@ -16,7 +16,8 @@ import AdminItemListSkeleton from "@/components/admin-product-list-skeleton/admi
 import AdminProductListSkeleton from "@/components/admin-product-list-skeleton/admin-product-list-skeleton";
 import AdminUserListSkeleton from "@/components/admin-user-list-skeleton/admin-user-list-skeleton";
 import { ProductContext } from "@/contexts/ProductContext";
-import { AccountContext } from "@/contexts/AccountContext";
+import Image from "next/image";
+import { UserContext } from "@/contexts/UserContext";
 
 export default function AdminPage() {
   const recoverModalProps = {
@@ -40,12 +41,12 @@ export default function AdminPage() {
     handleToast,
     getUserData,
   } = useContext(MainContext);
-  const {userDialogOpen, userModal} = useContext(AccountContext);
-  const {productDialogOpen, productModal} = useContext(ProductContext);
+  const {userDialogOpen, userModal} = useContext(UserContext);
+  const {productDialogOpen, productModal, currentProduct, handleCurrentProduct} = useContext(ProductContext);
   const [loading, setLoading] = useState(true);
   const [currentTab, setCurrentTab] = useState("users");
   const [productSearch, setProductSearch] = useState("");
-  const [currentProduct, setCurrentProduct] = useState(null);
+  //const [currentProduct, setCurrentProduct] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   type Context = {
     [key: string]: any;
@@ -133,7 +134,8 @@ export default function AdminPage() {
       setCurrentUser(item);
       userModal("show");
     } else {
-      setCurrentProduct(item);
+      //setCurrentProduct(item);
+      handleCurrentProduct(item.data);
       productModal("show");
     }
   }
@@ -266,10 +268,13 @@ export default function AdminPage() {
             products.map((product, index) => (
               <div key={index}>
                 <div className="justify-between mb-6 rounded-lg bg-zinc-900 text-orange-600 p-6 shadow-md sm:flex sm:justify-start">
-                  <img
-                    src={product.imageSrc}
+                  <Image
+                    src={product.imageSrc ?? ''}
                     alt="product-image"
-                    className="w-full rounded-lg sm:w-40"
+                    className="w-full rounded-lg sm:w-40 object-cover"
+                    style={{minWidth: '120px', maxWidth: '120px', minHeight: '120px', maxHeight: '120px'}}
+                    width={120}
+                    height={120}
                   />
                   <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
                     <div className="mt-5 sm:mt-0">

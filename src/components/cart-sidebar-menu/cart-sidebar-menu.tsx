@@ -1,13 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import { MainContext } from "@/contexts/MainContext";
-import { usePathname } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { FaBeer } from "react-icons/fa";
 import { FaX } from "react-icons/fa6";
 import CartProduct from "../cart-product/cart-product";
 import { formatCurrency } from "@/app/utils/formatter";
 import Link from "next/link";
+import { CartContext } from "@/contexts/CartContext";
 
 /* eslint-disable @next/next/no-img-element */
 const CartSidebarMenu = (
@@ -15,7 +14,7 @@ const CartSidebarMenu = (
   { children }: { children: React.ReactNode }
 ) => {
   const { cartSidebarOpen, cartSidebar, cartItems, handleUserCart } =
-    useContext(MainContext);
+    useContext(CartContext);
   const [cartSubTotal, setCartSubTotal] = useState(0);
 
   const calcSubTotal = () => {

@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { FaMinus, FaPlus, FaTrash } from "react-icons/fa";
 import './cart-product.css';
+import { CartContext } from "@/contexts/CartContext";
+import Image from "next/image";
 
 /* eslint-disable @next/next/no-img-element */
 const CartProduct = (
@@ -16,7 +18,7 @@ const CartProduct = (
   const product : Product = props.data;
   const index = props.index;
   const [productTotalPrice, setProductTotalPrice] = useState(1);
-  const { handleUserCart, cartItems } = useContext(MainContext);
+  const { handleUserCart, cartItems } = useContext(CartContext);
   const [productQuantity, setProductQuantity] = useState((product as any).quantity ?? 1) as any;
 
  const handleProductQuantity = (action: string) => {
@@ -44,15 +46,18 @@ const CartProduct = (
   return (
     <div key={index}>
       <div className="justify-between m-6 rounded-lg bg-zinc-800 text-orange-600 p-6 shadow-md sm:flex sm:justify-start">
-        <img
-          src={product.imageSrc}
+        <Image
+          src={product.imageSrc ?? ''}
           alt="product-image"
-          className="rounded-lg w-24"
+          className="rounded-lg w-24 object-cover"
+          style={{ minWidth:'72px', maxWidth: '72px',  minHeight: '72px', maxHeight: '72px' }}
+          width={72}
+          height={72}
         />
         <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
           <div className="mt-5 sm:mt-0">
             <h2 className="text-lg font-bold">{product.name}</h2>
-            <p className="mt-1 text-xs">{product.name}</p>
+            <p className="mt-1 text-xs">{index}</p>
           </div>
 
           <div className="mt-4 flex justify-between im sm:space-y-6 sm:mt-0 sm:block sm:space-x-6">
@@ -66,7 +71,7 @@ const CartProduct = (
               <input
                 className="h-8 w-8 border bg-zinc-900 text-center outline-none border-zinc-900 qty-product"
                 type="number"
-                value={productQuantity}
+                value={(product as any).quantity}
                 min="1"
               />
               <span
@@ -78,7 +83,7 @@ const CartProduct = (
             </div>
             <div className="flex items-center space-x-4">
               <p className="text-sm">
-                {productQuantity} x {formatCurrency('real', product.price)}
+                {(product as any).quantity} x {formatCurrency('real', product.price)}
               </p>
               <FaTrash
                 className="cursor-pointer"

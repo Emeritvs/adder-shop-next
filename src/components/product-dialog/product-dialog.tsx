@@ -4,6 +4,9 @@ import { MainContext } from "@/contexts/MainContext";
 import { ProductContext } from "@/contexts/ProductContext";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
+import Image from 'next/image';
+import { fileToBase64 } from "@/app/utils/encoders";
+import noImage from '../../../public/no-image.jpg';
 
 /* eslint-disable @next/next/no-img-element */
 const ProductDialog = (
@@ -13,24 +16,27 @@ const ProductDialog = (
   const { children, open, product, onDismiss, ...rest } = props;
   const { colorMode, changeColorMode, currentPageTitle, changePageTitle, toastData, handleToast} =
     useContext(MainContext);
-  const { productModal } = useContext(ProductContext);
-  const [productInfo, setProductInfo] = useState({} as Product);
+  const { productModal, currentProduct, handleCurrentProduct } = useContext(ProductContext);
+  const [productImage, setProductImage] = useState(noImage) as any;
 
   const [isVisible, setIsVisible] = useState(open);
       useEffect(() => {
-        setProductInfo(product?.data);
+        handleCurrentProduct(product)
         setIsVisible(open);
+        setProductImage(currentProduct?.imageSrc ?? noImage);
       }, [open, product]);
 
-    const closeModal = () => productModal("hide");
+    const closeModal = () => {
+     setProductImage(noImage);
+     productModal("hide");
+    };
 
-      const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setProductInfo((prevState) => ({
-          ...prevState,
-          [name]: value,
-        }));
-      };
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+       const { name, value } = e.target;
+       const auxProduct = currentProduct;
+       auxProduct[name] = value;
+       handleCurrentProduct(auxProduct);
+    };
 
   const updateProduct = async () => {
     try {
@@ -41,16 +47,12 @@ const ProductDialog = (
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(productInfo)
+          body: JSON.stringify(currentProduct)
         }
       );
 
       if (res) {
         const data = await res.json();
-        console.log(data);
-        // const auxData = data[0];
-        // setProduct(auxData);
-        // return auxData;
         productModal('hide');
         if (data.status == 'success') {
           onDismiss();
@@ -66,6 +68,24 @@ const ProductDialog = (
     }
   };
 
+  const imageChange  = (event : any) => {
+    if (event.target.files && event.target.files.length > 0) {
+      let image = event.target.files[0];
+
+      fileToBase64(image).then((res) => {
+        const auxProduct = currentProduct;
+        auxProduct.imageSrc = `data:@file/octet-stream;base64,${res}`;
+        handleCurrentProduct(auxProduct);
+      });
+
+      setProductImage(URL.createObjectURL(image));
+    }
+  };
+
+  const selectProductImage = () => {
+   let fileInput : any = document.querySelector('#product-photo');
+   fileInput.click();
+  };
 
   return (
     <div
@@ -99,17 +119,44 @@ const ProductDialog = (
                     className="text-base font-semibold leading-6 text-orange-600"
                     id="modal-title"
                   >
-                    {productInfo?._id && productInfo?._id != null
+                    {currentProduct?._id && currentProduct?._id != null
                       ? "Edit"
                       : "New"}{" "}
                     product
                   </h3>
                   <hr className="border-orange-600"></hr>
-                  
+
                   <div className="m-auto grid">
                     <div className="grid grid-cols-2 gap-8">
-                      <div className="col-span-1">
-                        <img src={productInfo?.imageSrc} alt="" />
+                      <div
+                        className="col-span-1 grid grid-cols-1"
+                        style={{ width: "150px", height: "150px" }}
+                      >
+                        <Image
+                          className="border border-orange-600"
+                          src={productImage}
+                          alt=""
+                          width={150}
+                          height={150}
+                          style={{
+                            maxHeight: "150px",
+                            maxWidth: "150px",
+                            objectFit: "cover",
+                          }}
+                        />
+                        <button
+                          className="bg-orange-600 text-white text-sm p-2 rounded"
+                          onClick={() => selectProductImage()}
+                        >
+                          Escolher imagem
+                        </button>
+                        <input
+                          type="file"
+                          name="product-photo"
+                          id="product-photo"
+                          className="hidden"
+                          onChange={imageChange}
+                        />
                       </div>
 
                       <div className="col-span-1">
@@ -128,7 +175,7 @@ const ProductDialog = (
                             className="h-12 p-2 bg-zinc-900 border border-orange-600 text-orange-600 "
                             type="text"
                             name="name"
-                            value={productInfo?.name}
+                            value={currentProduct?.name}
                             onChange={handleChange}
                             id=""
                           />
@@ -149,7 +196,7 @@ const ProductDialog = (
                             className="h-12 p-2 bg-zinc-900 border border-orange-600 text-orange-600 "
                             type="text"
                             name="price"
-                            value={productInfo?.price}
+                            value={currentProduct?.price}
                             onChange={handleChange}
                             id=""
                           />
@@ -170,7 +217,7 @@ const ProductDialog = (
                             className="h-12 p-2 bg-zinc-900 border border-orange-600 text-orange-600 "
                             type="text"
                             name="type"
-                            value={productInfo?.type}
+                            value={currentProduct?.type}
                             onChange={handleChange}
                             id=""
                           />
@@ -196,7 +243,7 @@ const ProductDialog = (
                 className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-auto"
                 onClick={() => updateProduct()}
               >
-                {productInfo?._id && productInfo?._id != null
+                {currentProduct?._id && currentProduct?._id != null
                   ? "Update"
                   : "Register"}
               </button>

@@ -3,17 +3,13 @@
 "use client";
 import { useParams, usePathname, useSearchParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
-import { Product } from "../interfaces/products-interface";
-import ProductCardSkeleton from "@/components/products-list-skeleton";
-import ProductCard from "@/components/product-card/product-card";
 import CartProduct from "@/components/cart-product/cart-product";
-import { MainContext } from "@/contexts/MainContext";
-import { FaX } from "react-icons/fa6";
 import { formatCurrency } from "../utils/formatter";
+import { CartContext } from "@/contexts/CartContext";
 
 export default function Checkout() {
   const { cartSidebarOpen, cartSidebar, cartItems, handleUserCart } =
-    useContext(MainContext);
+    useContext(CartContext);
   const [cartSubTotal, setCartSubTotal] = useState(0);
 
   const calcSubTotal = () => {

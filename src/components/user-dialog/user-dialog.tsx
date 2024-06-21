@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import { AccountContext } from "@/contexts/AccountContext";
+import { UserContext } from "@/contexts/UserContext";
 import { MainContext } from "@/contexts/MainContext";
 import { useContext, useEffect, useState } from "react";
+import noImage from "../../../public/no-image-user.jpg";
 
 /* eslint-disable @next/next/no-img-element */
 const UserDialog = (
@@ -18,30 +19,32 @@ const UserDialog = (
     changePageTitle,
     handleToast,
   } = useContext(MainContext);
-  const { userDialogOpen, userModal } = useContext(AccountContext);
-
-    const [userInfo, setUserInfo] = useState({} as any);
+  const { userDialogOpen, userModal, currentUser, handleCurrentUser } = useContext(UserContext);
   const [isVisible, setIsVisible] = useState(open);
+  const [userImage, setUserImage] = useState(noImage) as any;
   
     useEffect(() => {
-      setUserInfo(user?.data);
+       const auxUser = user?.data ?? {};
+       handleCurrentUser(auxUser);
+       setUserImage(currentUser.image);
       setIsVisible(open);
     }, [open, user]);
     
   const closeModal = () => {
-      userModal("hide");
-      onDismiss();
+   setUserImage(noImage);
+   userModal("hide");
+   onDismiss();
   };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setUserInfo((prevState : any) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    const auxUser = currentUser;
+    auxUser[name] = value;
+    handleCurrentUser(auxUser);
   };
 
   const updateUser = async () => {
-    const userData = userInfo;
+    const userData = currentUser;
 
 
     if (userData.firstname == null || userData.firstname == "")
@@ -70,7 +73,8 @@ const UserDialog = (
         visible: true,
       });
 
-    const action = userInfo._id && userInfo._id != null ? 'edit' : 'create';
+    const action =
+      currentUser._id && currentUser._id != null ? "edit" : "create";
     const res = await fetch(`http://localhost:3000/api/register?action=${action}`, {
       method: "POST",
       headers: {
@@ -125,17 +129,18 @@ const UserDialog = (
                     className="text-base font-semibold leading-6 text-orange-600"
                     id="modal-title"
                   >
-                    {userInfo?._id && userInfo?._id != null ? "Edit" : "New"}{" "}
+                    {currentUser?._id && currentUser?._id != null
+                      ? "Edit"
+                      : "New"}{" "}
                     user
                   </h3>
                   <hr className="border-orange-600"></hr>
 
                   <div className="m-auto grid">
                     <div className="grid grid-cols-2 gap-8">
-
                       <div className="col-span-1">
                         <img
-                        className="my-6"
+                          className="my-6"
                           src={"https://i.redd.it/nruegxhzx3471.jpg"}
                           alt=""
                         />
@@ -157,7 +162,7 @@ const UserDialog = (
                             className="h-12 p-2 bg-zinc-900 border border-orange-600 text-orange-600 "
                             type="text"
                             name="firstname"
-                            value={userInfo?.firstname}
+                            value={currentUser?.firstname}
                             onChange={handleChange}
                             id=""
                           />
@@ -178,7 +183,7 @@ const UserDialog = (
                             className="h-12 p-2 bg-zinc-900 border border-orange-600 text-orange-600 "
                             type="text"
                             name="lastname"
-                            value={userInfo?.lastname}
+                            value={currentUser?.lastname}
                             onChange={handleChange}
                             id=""
                           />
@@ -199,7 +204,7 @@ const UserDialog = (
                             className="h-12 p-2 bg-zinc-900 border border-orange-600 text-orange-600 "
                             type="text"
                             name="email"
-                            value={userInfo?.email}
+                            value={currentUser?.email}
                             onChange={handleChange}
                             id=""
                           />
@@ -220,7 +225,7 @@ const UserDialog = (
                             className="h-12 p-2 bg-zinc-900 border border-orange-600 text-orange-600 "
                             type="text"
                             name="username"
-                            value={userInfo?.username}
+                            value={currentUser?.username}
                             onChange={handleChange}
                             id=""
                           />
@@ -267,7 +272,9 @@ const UserDialog = (
                 className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-auto"
                 onClick={updateUser}
               >
-                {userInfo?._id && userInfo?._id != null ? "Update" : "Register"}
+                {currentUser?._id && currentUser?._id != null
+                  ? "Update"
+                  : "Register"}
               </button>
             </div>
           </div>

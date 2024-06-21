@@ -20,6 +20,8 @@ import ToastAlert from '@/components/toast-alert/toast-alert';
 import CartSidebarMenu from '@/components/cart-sidebar-menu/cart-sidebar-menu';
 import { ProductContextProvider } from '@/contexts/ProductContext';
 import { AccountContextProvider } from '@/contexts/AccountContext';
+import { CartContextProvider } from '@/contexts/CartContext';
+import { UserContextProvider } from '@/contexts/UserContext';
 
 export default function RootLayout({
   children,
@@ -39,13 +41,16 @@ export default function RootLayout({
       </head>
       <body>
         <MainContextProvider>
-          <Nav />
-
           <AccountContextProvider>
-            <ProductContextProvider>
-              <CartSidebarMenu />
-              <div className="container mx-auto">{children}</div>
-            </ProductContextProvider>
+            <UserContextProvider>
+              <ProductContextProvider>
+                <CartContextProvider>
+                  <Nav />
+                  <CartSidebarMenu />
+                  <div className="container mx-auto">{children}</div>
+                </CartContextProvider>
+              </ProductContextProvider>
+            </UserContextProvider>
           </AccountContextProvider>
 
           <ToastAlert />

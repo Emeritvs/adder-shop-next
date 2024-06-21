@@ -8,9 +8,11 @@ import Image from 'next/image';
 import { MainContext } from "@/contexts/MainContext";
 import AdderLogo from "../../public/adder-logo.png";
 import { UserData } from "@/app/interfaces/users-interface";
+import { CartContext } from "@/contexts/CartContext";
 
 export default function Nav() {
-  const { userData, handleUserData, getUserData, isLogged, isAdmin, cartSidebar } = useContext(MainContext);
+  const { userData, handleUserData, getUserData, isLogged, isAdmin } = useContext(MainContext);
+  const { cartSidebar } = useContext(CartContext);
   const { push } = useRouter();
   const [userInfo, setUserInfo] = useState({
     id: null,
