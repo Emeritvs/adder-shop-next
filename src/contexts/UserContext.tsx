@@ -6,6 +6,8 @@ interface UserContextData {
   handleCurrentUser: (user: any) => void;
   userDialogOpen: boolean;
   userModal: (action: string) => void;
+  dialogUserAction: string;
+  handleUserDialogAction: (product: any) => void;
 }
 
 interface UserContextProviderProps {
@@ -21,7 +23,14 @@ export const UserContextProvider = ({
   const [currentUser, setCurrentUser] = useState({});
   const userModal = (action: string) =>
     setUserDialogOpen(action == "show" ? true : false);
-    
+  const [dialogUserAction, setUserDialogAction] = useState("add");
+
+  const handleUserDialogAction = (action: string) => {
+    let auxAction = action;
+    setUserDialogAction(auxAction);
+    console.warn(auxAction);
+  };
+
   const handleCurrentUser = (user: any) => {
     const userData = user;
     console.warn(userData);
@@ -35,6 +44,8 @@ export const UserContextProvider = ({
         userModal,
         currentUser,
         handleCurrentUser,
+        dialogUserAction,
+        handleUserDialogAction,
       }}
     >
       {children}

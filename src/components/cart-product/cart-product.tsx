@@ -91,7 +91,9 @@ const CartProduct = (
               ></FaTrash>
             </div>
           </div>
+
         </div>
+        
       </div>
     </div>
   );

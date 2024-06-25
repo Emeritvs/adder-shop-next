@@ -3,9 +3,11 @@ import React, { createContext, useState, useContext, ReactNode } from "react";
 
 interface ProductContextData {
   currentProduct: any;
-  handleCurrentProduct: (product : any) => void;
+  handleCurrentProduct: (product: any) => void;
   productDialogOpen: boolean;
   productModal: (action: string) => void;
+  dialogProductAction: string;
+  handleProductDialogAction: (product: any) => void;
 }
 
 interface ProductContextProviderProps {
@@ -19,11 +21,20 @@ export const ProductContextProvider = ({
 }: ProductContextProviderProps) => {
   const [productDialogOpen, setProductDialogOpen] = useState(false);
   const [currentProduct, setCurrentProduct] = useState({});
-  const productModal = (action: string) =>
+  const [dialogProductAction, setProductDialogAction] = useState('add');
+  const productModal = (action: string) =>{
     setProductDialogOpen(action == "show" ? true : false);
+  }
+
   const handleCurrentProduct = (product : any) => {
    const productData = product;
    setCurrentProduct(productData);
+  };
+
+  const handleProductDialogAction = (action: string) => {
+    let auxAction = action;
+    setProductDialogAction(auxAction);
+    console.warn(auxAction);
   };
 
   return (
@@ -32,7 +43,9 @@ export const ProductContextProvider = ({
         productDialogOpen,
         productModal,
         currentProduct,
-        handleCurrentProduct
+        handleCurrentProduct,
+        dialogProductAction,
+        handleProductDialogAction,
       }}
     >
       {children}

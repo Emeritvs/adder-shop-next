@@ -32,6 +32,7 @@ export default function AdminPage() {
   const [products, setProducts] = useState([] as Product[]);
   const [users, setUsers] = useState([] as UserData[]);
   const [userDialogVisibility, setUserDialogVisibility] = useState(false);
+  const [dialogAction, setDialogAction] = useState('add');
   const {
     userData,
     colorMode,
@@ -41,12 +42,12 @@ export default function AdminPage() {
     handleToast,
     getUserData,
   } = useContext(MainContext);
-  const {userDialogOpen, userModal} = useContext(UserContext);
-  const {productDialogOpen, productModal, currentProduct, handleCurrentProduct} = useContext(ProductContext);
+  const { userDialogOpen, userModal, handleUserDialogAction } =
+    useContext(UserContext);
+  const {productDialogOpen, productModal, currentProduct, handleCurrentProduct, dialogProductAction, handleProductDialogAction} = useContext(ProductContext);
   const [loading, setLoading] = useState(true);
-  const [currentTab, setCurrentTab] = useState("users");
+  const [currentTab, setCurrentTab] = useState("products");
   const [productSearch, setProductSearch] = useState("");
-  //const [currentProduct, setCurrentProduct] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   type Context = {
     [key: string]: any;
@@ -130,11 +131,13 @@ export default function AdminPage() {
   };
 
   const addNewRegister = async (item : any) => {
+    console.log(item);
     if (currentTab == "users") {
+      handleUserDialogAction(item.action);
       setCurrentUser(item);
       userModal("show");
     } else {
-      //setCurrentProduct(item);
+      handleProductDialogAction(item.action);
       handleCurrentProduct(item.data);
       productModal("show");
     }
@@ -269,10 +272,15 @@ export default function AdminPage() {
               <div key={index}>
                 <div className="justify-between mb-6 rounded-lg bg-zinc-900 text-orange-600 p-6 shadow-md sm:flex sm:justify-start">
                   <Image
-                    src={product.imageSrc ?? ''}
+                    src={product.imageSrc ?? ""}
                     alt="product-image"
                     className="w-full rounded-lg sm:w-40 object-cover"
-                    style={{minWidth: '120px', maxWidth: '120px', minHeight: '120px', maxHeight: '120px'}}
+                    style={{
+                      minWidth: "120px",
+                      maxWidth: "120px",
+                      minHeight: "120px",
+                      maxHeight: "120px",
+                    }}
                     width={120}
                     height={120}
                   />

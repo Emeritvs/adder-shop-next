@@ -13,18 +13,21 @@ const ProductDialog = (
   props: any,
   // { children }: { children: React.ReactNode }
 ) => {
-  const { children, open, product, onDismiss, ...rest } = props;
+  const { children, open, product, action, onDismiss, ...rest } = props;
   const { colorMode, changeColorMode, currentPageTitle, changePageTitle, toastData, handleToast} =
     useContext(MainContext);
-  const { productModal, currentProduct, handleCurrentProduct } = useContext(ProductContext);
+  const { productModal, currentProduct, handleCurrentProduct, dialogProductAction } = useContext(ProductContext);
   const [productImage, setProductImage] = useState(noImage) as any;
+  const [productData, setProductData] = useState(product) as any;
+;
 
   const [isVisible, setIsVisible] = useState(open);
       useEffect(() => {
-        handleCurrentProduct(product)
+        handleCurrentProduct(product);
+        setProductData(product);
         setIsVisible(open);
         setProductImage(currentProduct?.imageSrc ?? noImage);
-      }, [open, product]);
+      }, [open, product, handleCurrentProduct]);
 
     const closeModal = () => {
      setProductImage(noImage);
@@ -32,27 +35,36 @@ const ProductDialog = (
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-       const { name, value } = e.target;
-       const auxProduct = currentProduct;
-       auxProduct[name] = value;
-       handleCurrentProduct(auxProduct);
+      const { name, value } = e.target;
+      //  const auxProduct = currentProduct;
+      //  auxProduct[name] = value;
+      //  console.log(value);
+
+      //  setProductData(auxProduct);
+      const auxProduct = { ...currentProduct, [name]: value };
+      handleCurrentProduct(auxProduct);
+      // setProductData((prevData: any) => ({
+      //   ...prevData,
+      //   [name]: value,
+      // }));
     };
 
   const updateProduct = async () => {
     try {
       const res = await fetch(
-        `http://localhost:3000/api/products/edit`,
+        `http://localhost:3000/api/products/${dialogProductAction}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(currentProduct)
+          body: JSON.stringify(productData),
         }
       );
 
       if (res) {
         const data = await res.json();
+        console.log(data);
         productModal('hide');
         if (data.status == 'success') {
           onDismiss();
@@ -68,15 +80,15 @@ const ProductDialog = (
     }
   };
 
-  const imageChange  = (event : any) => {
+  const imageChange  = async (event : any) => {
     if (event.target.files && event.target.files.length > 0) {
       let image = event.target.files[0];
+      const base64Image = await fileToBase64(image);
 
-      fileToBase64(image).then((res) => {
-        const auxProduct = currentProduct;
-        auxProduct.imageSrc = `data:@file/octet-stream;base64,${res}`;
-        handleCurrentProduct(auxProduct);
-      });
+      setProductData((prevData: any) => ({
+        ...prevData,
+        imageSrc: `data:@file/octet-stream;base64,${base64Image}`,
+      }));
 
       setProductImage(URL.createObjectURL(image));
     }
@@ -175,7 +187,7 @@ const ProductDialog = (
                             className="h-12 p-2 bg-zinc-900 border border-orange-600 text-orange-600 "
                             type="text"
                             name="name"
-                            value={currentProduct?.name}
+                            value={currentProduct?.name ?? ""}
                             onChange={handleChange}
                             id=""
                           />
@@ -196,7 +208,7 @@ const ProductDialog = (
                             className="h-12 p-2 bg-zinc-900 border border-orange-600 text-orange-600 "
                             type="text"
                             name="price"
-                            value={currentProduct?.price}
+                            value={currentProduct?.price ?? ""}
                             onChange={handleChange}
                             id=""
                           />
@@ -217,7 +229,7 @@ const ProductDialog = (
                             className="h-12 p-2 bg-zinc-900 border border-orange-600 text-orange-600 "
                             type="text"
                             name="type"
-                            value={currentProduct?.type}
+                            value={currentProduct?.type ?? ""}
                             onChange={handleChange}
                             id=""
                           />
