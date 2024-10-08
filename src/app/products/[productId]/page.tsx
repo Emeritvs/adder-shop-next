@@ -11,7 +11,6 @@ import { formatCurrency } from "@/app/utils/formatter";
 import blackShirt from "../../../../public/products/t-shirt-1.avif";
 import whiteShirt from "../../../../public/products/t-shirt-2.avif";
 import blueShirt from "../../../../public/products/t-shirt-circles-blue.avif";
-import F1 from "@/app/f1/page";
 import ProductInfoCard from "@/components/product-info-card/product-info-card";
 
 export default function ProductDetails({params} : {params: { productId: string}; }) {

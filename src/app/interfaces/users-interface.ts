@@ -13,6 +13,7 @@ export interface UserData {
   password?: string;
   firstname?: string;
   lastname?: string;
+  imageSrc?: string;
   role?: string;
 }
 

@@ -17,17 +17,16 @@ const ProductDialog = (
   const { colorMode, changeColorMode, currentPageTitle, changePageTitle, toastData, handleToast} =
     useContext(MainContext);
   const { productModal, currentProduct, handleCurrentProduct, dialogProductAction } = useContext(ProductContext);
+    const [isVisible, setIsVisible] = useState(open);
   const [productImage, setProductImage] = useState(noImage) as any;
   const [productData, setProductData] = useState(product) as any;
-;
 
-  const [isVisible, setIsVisible] = useState(open);
       useEffect(() => {
         handleCurrentProduct(product);
         setProductData(product);
         setIsVisible(open);
         setProductImage(currentProduct?.imageSrc ?? noImage);
-      }, [open, product, handleCurrentProduct]);
+      }, [open, product, currentProduct]);
 
     const closeModal = () => {
      setProductImage(noImage);
@@ -36,18 +35,28 @@ const ProductDialog = (
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
-      //  const auxProduct = currentProduct;
-      //  auxProduct[name] = value;
-      //  console.log(value);
-
-      //  setProductData(auxProduct);
       const auxProduct = { ...currentProduct, [name]: value };
       handleCurrentProduct(auxProduct);
-      // setProductData((prevData: any) => ({
-      //   ...prevData,
-      //   [name]: value,
-      // }));
     };
+
+  const imageChange = async (event: any) => {
+    if (event.target.files && event.target.files.length > 0) {
+      let image = event.target.files[0];
+      const base64Image = await fileToBase64(image);
+
+      setProductData((prevData: any) => ({
+        ...prevData,
+        imageSrc: `data:@file/octet-stream;base64,${base64Image}`,
+      }));
+
+      setProductImage(URL.createObjectURL(image));
+    }
+  };
+
+  const selectProductImage = () => {
+    let fileInput: any = document.querySelector("#product-photo");
+    fileInput.click();
+  };
 
   const updateProduct = async () => {
     try {
@@ -80,25 +89,6 @@ const ProductDialog = (
     }
   };
 
-  const imageChange  = async (event : any) => {
-    if (event.target.files && event.target.files.length > 0) {
-      let image = event.target.files[0];
-      const base64Image = await fileToBase64(image);
-
-      setProductData((prevData: any) => ({
-        ...prevData,
-        imageSrc: `data:@file/octet-stream;base64,${base64Image}`,
-      }));
-
-      setProductImage(URL.createObjectURL(image));
-    }
-  };
-
-  const selectProductImage = () => {
-   let fileInput : any = document.querySelector('#product-photo');
-   fileInput.click();
-  };
-
   return (
     <div
       id="user-dialog"
@@ -110,6 +100,7 @@ const ProductDialog = (
       aria-labelledby="modal-title"
       role="dialog"
       aria-modal="true"
+      onClick={() => closeModal()}
     >
       <div
         className={`fixed inset-0 bg-zinc-800 bg-opacity-75 transition-opacity`}
@@ -123,6 +114,7 @@ const ProductDialog = (
                 ? "ease-out duration-300 translate-y-0 sm:scale-100 opacity-100"
                 : "ease-in duration-200 translate-y-4 sm:translate-y-0 sm:scale-95 opacity-0"
             }`}
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="bg-zinc-900 text-orange-600 px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
               <div className="">

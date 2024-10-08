@@ -1,3 +1,4 @@
+"use client";
 import { UserData } from "@/app/interfaces/users-interface";
 import React, { createContext, useState, useContext, ReactNode } from "react";
 
@@ -21,20 +22,19 @@ export const ProductContextProvider = ({
 }: ProductContextProviderProps) => {
   const [productDialogOpen, setProductDialogOpen] = useState(false);
   const [currentProduct, setCurrentProduct] = useState({});
-  const [dialogProductAction, setProductDialogAction] = useState('add');
-  const productModal = (action: string) =>{
+  const [dialogProductAction, setProductDialogAction] = useState("add");
+  const productModal = (action: string) => {
     setProductDialogOpen(action == "show" ? true : false);
-  }
-
-  const handleCurrentProduct = (product : any) => {
-   const productData = product;
-   setCurrentProduct(productData);
   };
 
   const handleProductDialogAction = (action: string) => {
     let auxAction = action;
     setProductDialogAction(auxAction);
-    console.warn(auxAction);
+  };
+
+  const handleCurrentProduct = (product: any) => {
+    const productData = product;
+    setCurrentProduct(productData);
   };
 
   return (

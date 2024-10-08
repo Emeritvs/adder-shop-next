@@ -9,12 +9,31 @@ import { MainContext } from "@/contexts/MainContext";
 
 
 
+
 export default function Home() {
   const pathName = usePathname();
   const [products, setProducts] = useState([] as Product);
   const [loading, setLoading] = useState(true);
   const { getUserData } = useContext(MainContext);
 
+
+  const fetchEfi = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/checkout", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (res) {
+        const data = await res.json();
+        setProducts(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -38,6 +57,7 @@ export default function Home() {
 
   useEffect(() => {
     getUserData();
+    fetchEfi();
     fetchData();
   }, []);
 

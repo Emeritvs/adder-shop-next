@@ -1,3 +1,4 @@
+"use client";
 import { UserData } from "@/app/interfaces/users-interface";
 import React, { createContext, useState, useContext, ReactNode } from "react";
 
@@ -12,13 +13,10 @@ interface AccountContextProviderProps {
 
 export const AccountContext = createContext({} as AccountContextData);
 
-export const AccountContextProvider = ({ children }: AccountContextProviderProps) => {
-
+export const AccountContextProvider = ({
+  children,
+}: AccountContextProviderProps) => {
   return (
-    <AccountContext.Provider
-      value={{}}
-    >
-      {children}
-    </AccountContext.Provider>
+    <AccountContext.Provider value={{}}>{children}</AccountContext.Provider>
   );
 };

@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { MongoClient, ObjectId } from "mongodb";
 import { useSearchParams } from "next/navigation";
 import { NextApiRequest } from "next";
+import { mongoUrl } from "../../connections/db-connect";
 
-const uri =
-  "mongodb+srv://augustogdev:GqdLwolCPKaVelhj@addershopcluster.wvnuxqu.mongodb.net/";
+const uri = mongoUrl();
 
 export async function GET(req: NextRequest) {
   const params = req.nextUrl.searchParams;

@@ -1,3 +1,4 @@
+"use client";
 import { UserData } from "@/app/interfaces/users-interface";
 import React, { createContext, useState, useContext, ReactNode } from "react";
 
@@ -16,24 +17,20 @@ interface UserContextProviderProps {
 
 export const UserContext = createContext({} as UserContextData);
 
-export const UserContextProvider = ({
-  children,
-}: UserContextProviderProps) => {
+export const UserContextProvider = ({ children }: UserContextProviderProps) => {
   const [userDialogOpen, setUserDialogOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
+  const [dialogUserAction, setUserDialogAction] = useState("add");
   const userModal = (action: string) =>
     setUserDialogOpen(action == "show" ? true : false);
-  const [dialogUserAction, setUserDialogAction] = useState("add");
 
   const handleUserDialogAction = (action: string) => {
     let auxAction = action;
     setUserDialogAction(auxAction);
-    console.warn(auxAction);
   };
 
   const handleCurrentUser = (user: any) => {
     const userData = user;
-    console.warn(userData);
     setCurrentUser(userData);
   };
 

@@ -10,5 +10,5 @@
 } */
 
 .adder-product-card img {
-  object-fit: fill;
+  object-fit: contain !important;
 }

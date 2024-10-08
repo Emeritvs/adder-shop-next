@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { MongoClient, ObjectId } from "mongodb";
 import crypto from "crypto";
 import { useSearchParams } from "next/navigation";
+import { mongoUrl } from "../../../connections/db-connect";
 
-const uri =
-  "mongodb+srv://augustogdev:GqdLwolCPKaVelhj@addershopcluster.wvnuxqu.mongodb.net/";
+const uri = mongoUrl();
 
 export async function POST(req: NextRequest) {
   const body = await req.json();

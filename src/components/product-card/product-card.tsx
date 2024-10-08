@@ -5,7 +5,6 @@ import './product-card.css';
 import Link from "next/link";
 import { formatCurrency } from "@/app/utils/formatter";
 
-/* eslint-disable @next/next/no-img-element */
 const ProductCard = (props : any, { children }: { children: React.ReactNode }) => {
   const pathName = usePathname();
     const { colorMode, changeColorMode, currentPageTitle, changePageTitle } =
@@ -18,7 +17,7 @@ const ProductCard = (props : any, { children }: { children: React.ReactNode }) =
       key={product._id}
       className="adder-product-card group relative p-2  hover:bg-orange-600 text-orange-600 hover:text-zinc-950"
     >
-      <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-100 lg:h-80">
+      <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-100">
         <img
           src={product.imageSrc}
           alt={product.imageAlt}

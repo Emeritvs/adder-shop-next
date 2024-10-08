@@ -134,7 +134,7 @@ const ProductInfoCard = (
                 >
                   <img
                     className="relative h-full w-full object-contain transition duration-300 ease-in-out group-hover:scale-105"
-                    src={photo}
+                    src={photo ?? ""}
                     alt="Shirt"
                     width={80}
                     height={80}
@@ -197,7 +197,6 @@ const ProductInfoCard = (
             <div className="mr-auto w-auto rounded-full bg-orange-600 p-2 text-sm text-white">
               <p>
                 {formatCurrency(product.currency, product.price)}
-                {/* $20.00<span className="ml-1 inline">USD</span> */}
               </p>
             </div>
           </div>

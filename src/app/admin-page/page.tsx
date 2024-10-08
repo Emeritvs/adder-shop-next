@@ -18,6 +18,7 @@ import AdminUserListSkeleton from "@/components/admin-user-list-skeleton/admin-u
 import { ProductContext } from "@/contexts/ProductContext";
 import Image from "next/image";
 import { UserContext } from "@/contexts/UserContext";
+import noUserImage from "../../../public/no-image-user.jpg";
 
 export default function AdminPage() {
   const recoverModalProps = {
@@ -46,7 +47,7 @@ export default function AdminPage() {
     useContext(UserContext);
   const {productDialogOpen, productModal, currentProduct, handleCurrentProduct, dialogProductAction, handleProductDialogAction} = useContext(ProductContext);
   const [loading, setLoading] = useState(true);
-  const [currentTab, setCurrentTab] = useState("products");
+  const [currentTab, setCurrentTab] = useState("users");
   const [productSearch, setProductSearch] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
   type Context = {
@@ -131,10 +132,9 @@ export default function AdminPage() {
   };
 
   const addNewRegister = async (item : any) => {
-    console.log(item);
     if (currentTab == "users") {
       handleUserDialogAction(item.action);
-      setCurrentUser(item);
+      setCurrentUser(item.data);
       userModal("show");
     } else {
       handleProductDialogAction(item.action);
@@ -190,8 +190,9 @@ export default function AdminPage() {
       <hr className="border-orange-600"></hr>
       {currentTab == "users" && (
         <div id="users" className="mt-6 mb-2 p-4 bg-zinc-900">
-          <div className="grid grid-cols-6 bg-zinc-900 text-orange-600 ">
+          <div className="grid grid-cols-7 bg-zinc-900 text-orange-600 ">
             <div className="col-span-1">#</div>
+            <div className="col-span-1">Avatar</div>
             <div className="col-span-1">Username</div>
             <div className="col-span-1">Email</div>
             <div className="col-span-1">Role</div>
@@ -204,15 +205,36 @@ export default function AdminPage() {
           ) : (
             users.map((user, index) => (
               <div key={index}>
-                <div className="grid grid-cols-6 p-8 bg-zinc-900 text-orange-600">
-                  <div className="col-span-1">{index}</div>
-                  <div className="col-span-1">{user.username}</div>
-                  <div className="col-span-1">{user.email}</div>
-                  <div className="col-span-1">{user.role}</div>
-                  <div className="col-span-1">
+                <div className="grid grid-cols-7 p-8 bg-zinc-900 text-orange-600">
+                  <div className="col-span-1 flex items-center">{index}</div>
+                  <div className="col-span-1 flex items-center">
+                    <Image
+                      className="border border-orange-600 rounded"
+                      src={user?.imageSrc
+                          ?? noUserImage
+                      }
+                      alt=""
+                      width={60}
+                      height={60}
+                      style={{
+                        aspectRatio: "1/1",
+                        objectFit: "cover",
+                      }}
+                    />
+                  </div>
+                  <div className="col-span-1 flex items-center">
+                    {user.username}
+                  </div>
+                  <div className="col-span-1 flex items-center">
+                    {user.email}
+                  </div>
+                  <div className="col-span-1 flex items-center">
+                    {user.role}
+                  </div>
+                  <div className="col-span-1 flex items-center">
                     {user.firstname} {user.lastname}
                   </div>
-                  <div className="col-span-1">
+                  <div className="col-span-1 flex items-center">
                     <button
                       className="bg-orange-600 text-white p-2 rounded"
                       onClick={() =>

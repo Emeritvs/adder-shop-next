@@ -3,7 +3,9 @@
 import { UserContext } from "@/contexts/UserContext";
 import { MainContext } from "@/contexts/MainContext";
 import { useContext, useEffect, useState } from "react";
+import Image from "next/image";
 import noImage from "../../../public/no-image-user.jpg";
+import { fileToBase64 } from "@/app/utils/encoders";
 
 /* eslint-disable @next/next/no-img-element */
 const UserDialog = (
@@ -19,15 +21,18 @@ const UserDialog = (
     changePageTitle,
     handleToast,
   } = useContext(MainContext);
-  const { userDialogOpen, userModal, currentUser, handleCurrentUser } = useContext(UserContext);
+  const { userModal, currentUser, handleCurrentUser } = useContext(UserContext);
   const [isVisible, setIsVisible] = useState(open);
   const [userImage, setUserImage] = useState(noImage) as any;
+  const [userData, setUserData] = useState(user) as any;
   
     useEffect(() => {
-       const auxUser = user?.data ?? {};
-       handleCurrentUser(auxUser);
-       setUserImage(currentUser.image);
+
       setIsVisible(open);
+      handleCurrentUser(user);
+      setUserData(user);
+      setUserImage(user?.imageSrc ?? noImage);
+
     }, [open, user]);
     
   const closeModal = () => {
@@ -36,37 +41,56 @@ const UserDialog = (
    onDismiss();
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    const auxUser = currentUser;
-    auxUser[name] = value;
-    handleCurrentUser(auxUser);
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      const auxUser = { ...currentUser, [name]: value };
+      handleCurrentUser(auxUser);
+    };
+    
+    const imageChange = async (event: any) => {
+      if (event.target.files && event.target.files.length > 0) {
+        let image = event.target.files[0];
+        const base64Image = await fileToBase64(image);
+
+        setUserData((prevData: any) => ({
+          ...prevData,
+          imageSrc: `data:@file/octet-stream;base64,${base64Image}`,
+        }));
+
+        setUserImage(URL.createObjectURL(image));
+      }
+    };
+
+  const selectUserImage = () => {
+    let fileInput: any = document.querySelector("#user-photo");
+    fileInput.click();
   };
 
   const updateUser = async () => {
-    const userData = currentUser;
+    const userDataAux = currentUser;
+    userDataAux.imageSrc = userImage ?? null;
 
 
-    if (userData.firstname == null || userData.firstname == "")
+    if (userDataAux.firstname == null || userDataAux.firstname == "")
       return handleToast({
         status: "info",
         message: "Enter the field Name to continue",
         visible: true,
       });
 
-    if (userData.lastname == null || userData.lastname == "")
+    if (userDataAux.lastname == null || userDataAux.lastname == "")
       return handleToast({
         status: "info",
         message: "Enter the field Last Name to continue",
         visible: true,
       });
-    if (userData.email == null || userData.email == "")
+    if (userDataAux.email == null || userDataAux.email == "")
       return handleToast({
         status: "info",
         message: "Enter the field Email to continue",
         visible: true,
       });
-    if (userData.username == null || userData.username == "")
+    if (userDataAux.username == null || userDataAux.username == "")
       return handleToast({
         status: "info",
         message: "Enter the field Username to continue",
@@ -75,6 +99,7 @@ const UserDialog = (
 
     const action =
       currentUser._id && currentUser._id != null ? "edit" : "create";
+
     const res = await fetch(`http://localhost:3000/api/register?action=${action}`, {
       method: "POST",
       headers: {
@@ -108,6 +133,7 @@ const UserDialog = (
       aria-labelledby="modal-title"
       role="dialog"
       aria-modal="true"
+      onClick={() => closeModal()}
     >
       <div
         className={`fixed inset-0 bg-zinc-800 bg-opacity-75 transition-opacity`}
@@ -121,6 +147,7 @@ const UserDialog = (
                 ? "ease-out duration-300 translate-y-0 sm:scale-100 opacity-100"
                 : "ease-in duration-200 translate-y-4 sm:translate-y-0 sm:scale-95 opacity-0"
             }`}
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="bg-zinc-900 text-orange-600 px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
               <div className="">
@@ -129,20 +156,41 @@ const UserDialog = (
                     className="text-base font-semibold leading-6 text-orange-600"
                     id="modal-title"
                   >
-                    {currentUser?._id && currentUser?._id != null
-                      ? "Edit"
-                      : "New"}{" "}
+                    {userData?._id && userData?._id != null ? "Edit" : "New"}{" "}
                     user
                   </h3>
                   <hr className="border-orange-600"></hr>
 
                   <div className="m-auto grid">
                     <div className="grid grid-cols-2 gap-8">
-                      <div className="col-span-1">
-                        <img
-                          className="my-6"
-                          src={"https://i.redd.it/nruegxhzx3471.jpg"}
+                      <div
+                        className="col-span-1 grid grid-cols-1 p-4 w-full"
+                        // style={{ width: "150px", height: "150px" }}
+                      >
+                        <Image
+                          className="border border-orange-600"
+                          // src={productImage}
+                          src={userImage}
                           alt=""
+                          width={300}
+                          height={300}
+                          style={{
+                            aspectRatio: "1/1",
+                            objectFit: "cover",
+                          }}
+                        />
+                        <button
+                          className="bg-orange-600 text-white text-sm p-2 rounded"
+                          onClick={() => selectUserImage()}
+                        >
+                          Escolher imagem
+                        </button>
+                        <input
+                          type="file"
+                          name="user-photo"
+                          id="user-photo"
+                          className="hidden"
+                          onChange={imageChange}
                         />
                       </div>
 
@@ -162,7 +210,7 @@ const UserDialog = (
                             className="h-12 p-2 bg-zinc-900 border border-orange-600 text-orange-600 "
                             type="text"
                             name="firstname"
-                            value={currentUser?.firstname}
+                            value={currentUser?.firstname ?? ""}
                             onChange={handleChange}
                             id=""
                           />
@@ -183,7 +231,7 @@ const UserDialog = (
                             className="h-12 p-2 bg-zinc-900 border border-orange-600 text-orange-600 "
                             type="text"
                             name="lastname"
-                            value={currentUser?.lastname}
+                            value={currentUser?.lastname ?? ""}
                             onChange={handleChange}
                             id=""
                           />
@@ -204,7 +252,7 @@ const UserDialog = (
                             className="h-12 p-2 bg-zinc-900 border border-orange-600 text-orange-600 "
                             type="text"
                             name="email"
-                            value={currentUser?.email}
+                            value={currentUser?.email ?? ""}
                             onChange={handleChange}
                             id=""
                           />
@@ -225,7 +273,7 @@ const UserDialog = (
                             className="h-12 p-2 bg-zinc-900 border border-orange-600 text-orange-600 "
                             type="text"
                             name="username"
-                            value={currentUser?.username}
+                            value={currentUser?.username ?? ""}
                             onChange={handleChange}
                             id=""
                           />

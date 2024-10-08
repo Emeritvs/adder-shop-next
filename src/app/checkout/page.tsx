@@ -65,7 +65,7 @@ export default function Checkout() {
               <p className="text-white text-xl">No items added.</p>
             ) : (
               (cartItems as any).map((item: any, index: any) => (
-                <CartProduct key={index} data={item} index={index} />
+                <CartProduct key={index} data={item} index={index} ></CartProduct>
               ))
             )}
           </div>

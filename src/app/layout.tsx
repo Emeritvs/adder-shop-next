@@ -22,6 +22,7 @@ import { ProductContextProvider } from '@/contexts/ProductContext';
 import { AccountContextProvider } from '@/contexts/AccountContext';
 import { CartContextProvider } from '@/contexts/CartContext';
 import { UserContextProvider } from '@/contexts/UserContext';
+import dynamic from 'next/dynamic';
 
 export default function RootLayout({
   children,
@@ -40,21 +41,23 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <MainContextProvider>
-          <AccountContextProvider>
-            <UserContextProvider>
-              <ProductContextProvider>
-                <CartContextProvider>
-                  <Nav />
-                  <CartSidebarMenu />
-                  <div className="container mx-auto">{children}</div>
-                </CartContextProvider>
-              </ProductContextProvider>
-            </UserContextProvider>
-          </AccountContextProvider>
+        <div>
+          <MainContextProvider>
+            <AccountContextProvider>
+              <UserContextProvider>
+                <ProductContextProvider>
+                  <CartContextProvider>
+                    <Nav />
+                    <CartSidebarMenu></CartSidebarMenu>
+                    <div className="container mx-auto">{children}</div>
+                  </CartContextProvider>
+                </ProductContextProvider>
+              </UserContextProvider>
+            </AccountContextProvider>
 
-          <ToastAlert />
-        </MainContextProvider>
+            <ToastAlert />
+          </MainContextProvider>
+        </div>
       </body>
     </html>
   );
